@@ -384,7 +384,7 @@ class shot_chart:
                  contextmeasure=1,clutchtime=7,rookieyear='',
                  contextfilter='',startperiod='1',endperiod='10',startrange='0',
                  endrange='28800', gamesegment=1, rangetype='2'):
-        if not rookieyear == '':
+        if rookieyear != '':
             rookieyear = _nbaSeason(rookieyear)
         self._url = "http://stats.nba.com/stats/shotchartdetail?"
         self._api_param = {'LeagueID': leagueid,
@@ -428,24 +428,20 @@ class shot_chart:
         return [dict(zip(_headers, value)) for value in _values]
 
 def PlayerList(season='2015', AllTime=False, league='NBA'):
+    _url = "http://stats.nba.com/stats/commonallplayers?"
     if AllTime:
-        _url = "http://stats.nba.com/stats/commonallplayers?"
         _api_param = {'IsOnlyCurrentSeason':"0",
                       'LeagueID':_nbaLeague(league),
                       'Season': "2015-16"}
-        _pull = _requests.get(_url, params=_api_param, headers=my_headers)
-        _headers = _pull.json()['resultSets'][0]['headers']
-        _values = _pull.json()['resultSets'][0]['rowSet']
-        return [dict(zip(_headers, value)) for value in _values]
     else:
-        _url = "http://stats.nba.com/stats/commonallplayers?"
         _api_param = {'IsOnlyCurrentSeason':"0",
                       'LeagueID': _nbaLeague(league),
                       'Season': _nbaSeason(season)}
-        _pull = _requests.get(_url, params=_api_param, headers=my_headers)
-        _headers = _pull.json()['resultSets'][0]['headers']
-        _values = _pull.json()['resultSets'][0]['rowSet']
-        return [dict(zip(_headers, value)) for value in _values]
+
+    _pull = _requests.get(_url, params=_api_param, headers=my_headers)
+    _headers = _pull.json()['resultSets'][0]['headers']
+    _values = _pull.json()['resultSets'][0]['rowSet']
+    return [dict(zip(_headers, value)) for value in _values]
 
 __all__ = ["demographics", "career_stats", "general_splits",
            "game_logs", "shot_dashboard", "rebound_dashboard",
